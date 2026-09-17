@@ -4,7 +4,7 @@ Customer Lifetime Value (CLV) Analysis using Python, RFM Analysis, and Random Fo
 
 ## 🚀 Live Deployment
 
-**Streamlit App:** https://customer-lifetime-analysis-2zhwtz.v2.appdeploy.ai/
+**Streamlit App:** https://customer-life-time-value-analysis-o5dpapbehwvmafn4exwpzy.streamlit.app/
 
 The interactive application allows users to:
 - Analyze customer RFM values
