@@ -14,12 +14,26 @@ st.markdown(
     .hero h1 {font-size: 2.6rem; margin: .3rem 0;}
     .hero p {color: #dbeafe; font-size: 1.05rem;}
     .card {padding: 1.2rem; border-radius: 18px; background: rgba(255,255,255,.92); border: 1px solid #c4b5fd; box-shadow: 0 8px 22px rgba(49,46,129,.08);}
-    .footer {text-align: center; color: #64748b; padding: 1.5rem 0;}
+    .sidebar-brand {display:flex; align-items:center; gap:12px; padding:8px 4px 14px;}
+    .brand-icon {width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.14); font-size:21px;}
+    .brand-title {font-size:1.25rem; font-weight:700;}
+    .brand-subtitle {font-size:.72rem; opacity:.75; margin-top:2px;}
+    .side-card {padding:14px; border-radius:16px; background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.12);}
+    .side-card-title {font-size:.68rem; letter-spacing:1px; opacity:.7; margin-bottom:10px;}
+    .side-item {display:flex; align-items:center; gap:10px; padding:9px 6px; margin:4px 0; border-radius:10px; transition:background .2s ease, transform .2s ease;}
+    .side-item:hover {background:rgba(255,255,255,.10); transform:translateX(3px);}
+    .side-icon {width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.10);}
+    .side-item b {display:block; font-size:.82rem;}
+    .side-item small {display:block; font-size:.65rem; opacity:.65; margin-top:2px;}
+    .developer-card {padding:14px; border-radius:16px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); text-align:center;}
+    .dev-label {font-size:.62rem; letter-spacing:1.2px; opacity:.65;}
+    .dev-name {font-size:1.05rem; font-weight:700; margin-top:4px;}
+    .dev-role {font-size:.68rem; opacity:.65; margin-top:2px;}
+    .footer {text-align:center; color:#64748b; padding:1.5rem 0;}
     </style>
     """,
     unsafe_allow_html=True,
 )
-
 
 @st.cache_resource
 def load_model():
@@ -28,7 +42,6 @@ def load_model():
     encoder = joblib.load("label_encoder.pkl")
     features = joblib.load("feature_columns.pkl")
     return model, encoder, features
-
 
 try:
     model, encoder, features = load_model()
@@ -52,7 +65,6 @@ SEGMENT_INFO = {
     "Lost Customers": {"icon": "🔄", "description": "Customers with a strong inactivity signal in their historical data.", "action": "Consider whether a cost-effective win-back approach makes sense."},
 }
 
-
 def predict_segment(recency, frequency, monetary):
     """Predict a customer segment from the three RFM values."""
     customer = pd.DataFrame([[recency, frequency, monetary]], columns=EXPECTED_FEATURES)
@@ -60,23 +72,60 @@ def predict_segment(recency, frequency, monetary):
     segment = encoder.inverse_transform(prediction)[0]
     return segment, customer
 
-
-st.sidebar.title("📊 CLV Analysis")
+# Interactive sidebar
+st.sidebar.markdown(
+    """
+    <div class="sidebar-brand">
+        <div class="brand-icon">📊</div>
+        <div>
+            <div class="brand-title">CLV Analysis</div>
+            <div class="brand-subtitle">Customer Intelligence</div>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 st.sidebar.caption("Understand customer behaviour using RFM analysis.")
+
 page = st.sidebar.radio(
-    "Go to",
+    "Explore",
     ["Customer Analysis", "What-if Simulator", "Model Insights", "Segment Guide", "About Project"],
 )
 st.sidebar.divider()
 
-st.sidebar.caption("Random Forest")
-st.sidebar.caption("RFM")
-st.sidebar.caption("5 Customer Segments")
+st.sidebar.markdown(
+    """
+    <div class="side-card">
+        <div class="side-card-title">⚙️ MODEL SETUP</div>
+        <div class="side-item">
+            <span class="side-icon">🌲</span>
+            <div><b>Random Forest</b><small>Classification model</small></div>
+        </div>
+        <div class="side-item">
+            <span class="side-icon">📈</span>
+            <div><b>RFM Analysis</b><small>Recency • Frequency • Monetary</small></div>
+        </div>
+        <div class="side-item">
+            <span class="side-icon">🎯</span>
+            <div><b>5 Segments</b><small>Customer behaviour groups</small></div>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.sidebar.divider()
-st.sidebar.caption("Developed by")
-st.sidebar.markdown("**MD JAHID**")
 
+st.sidebar.markdown(
+    """
+    <div class="developer-card">
+        <div class="dev-label">PROJECT DEVELOPER</div>
+        <div class="dev-name">MD JAHID</div>
+        <div class="dev-role">Data Science Project</div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 if page == "Customer Analysis":
     st.markdown(
@@ -138,7 +187,6 @@ if page == "Customer Analysis":
 
     st.caption("This application classifies historical RFM behaviour. It does not directly forecast a future monetary CLV amount.")
 
-
 elif page == "What-if Simulator":
     st.markdown(
         """
@@ -149,27 +197,20 @@ elif page == "What-if Simulator":
         """,
         unsafe_allow_html=True,
     )
-
     st.warning("This is a hypothetical scenario, not a forecast of future behaviour or future CLV.")
 
     current = st.columns(3)
     scenario = st.columns(3)
 
-    with current[0]:
-        current_r = st.number_input("Current recency", 0, 5000, 30)
-    with current[1]:
-        current_f = st.number_input("Current frequency", 0, 10000, 10)
-    with current[2]:
-        current_m = st.number_input("Current monetary (₹)", 0.0, 10000000.0, 1000.0, 100.0)
+    with current[0]: current_r = st.number_input("Current recency", 0, 5000, 30)
+    with current[1]: current_f = st.number_input("Current frequency", 0, 10000, 10)
+    with current[2]: current_m = st.number_input("Current monetary (₹)", 0.0, 10000000.0, 1000.0, 100.0)
 
     st.markdown("### Change the profile")
 
-    with scenario[0]:
-        new_r = st.number_input("New recency", 0, 5000, 120)
-    with scenario[1]:
-        new_f = st.number_input("New frequency", 0, 10000, 20)
-    with scenario[2]:
-        new_m = st.number_input("New monetary (₹)", 0.0, 10000000.0, 2500.0, 100.0)
+    with scenario[0]: new_r = st.number_input("New recency", 0, 5000, 120)
+    with scenario[1]: new_f = st.number_input("New frequency", 0, 10000, 20)
+    with scenario[2]: new_m = st.number_input("New monetary (₹)", 0.0, 10000000.0, 2500.0, 100.0)
 
     before, _ = predict_segment(current_r, current_f, current_m)
     after, _ = predict_segment(new_r, new_f, new_m)
@@ -189,7 +230,6 @@ elif page == "What-if Simulator":
     else:
         st.success(f"With these changed RFM values, the model classifies the profile as **{after}** instead of **{before}**.")
 
-
 elif page == "Model Insights":
     st.markdown(
         """
@@ -200,7 +240,6 @@ elif page == "Model Insights":
         """,
         unsafe_allow_html=True,
     )
-
     a, b, c = st.columns(3)
     a.metric("Algorithm", "Random Forest")
     b.metric("Inputs", "3 RFM features")
@@ -216,7 +255,6 @@ elif page == "Model Insights":
 
     st.info("The segment label is created from RFM-based business rules. Because the model learns from related RFM inputs, very high classification scores should be interpreted carefully.")
 
-
 elif page == "Segment Guide":
     st.markdown(
         """
@@ -227,7 +265,6 @@ elif page == "Segment Guide":
         """,
         unsafe_allow_html=True,
     )
-
     segment = st.selectbox("Select a segment", list(SEGMENT_INFO))
     info = SEGMENT_INFO[segment]
 
@@ -243,9 +280,7 @@ elif page == "Segment Guide":
         """,
         unsafe_allow_html=True,
     )
-
     st.caption("These suggestions are based on historical RFM segmentation and should be used as analytical guidance.")
-
 
 else:
     st.markdown(
@@ -257,21 +292,15 @@ else:
         """,
         unsafe_allow_html=True,
     )
-
     st.markdown("### Project overview")
     st.write("Customer Lifetime Value Analysis uses historical retail transactions to create customer-level RFM measures: Recency, Frequency and Monetary value. These measures are then used to classify customers into meaningful segments.")
-
     st.markdown("### Technology used")
     st.write("Python • Pandas • Scikit-learn • Joblib • Streamlit • Matplotlib")
-
     st.markdown("### Project scope")
     st.write("The application focuses on customer-value segmentation from historical behaviour. It does not directly predict a future monetary CLV amount.")
-
     st.markdown("### Future improvements")
     st.write("Possible extensions include numerical CLV forecasting, churn prediction, richer behavioural features, model comparison and time-based validation.")
-
     st.markdown("### Developer")
     st.write("MD JAHID")
-
 
 st.markdown('<div class="footer">Customer Lifetime Value Analysis • RFM Customer Segmentation • MD JAHID</div>', unsafe_allow_html=True)
