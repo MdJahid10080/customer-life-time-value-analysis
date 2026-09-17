@@ -2,35 +2,18 @@ import joblib
 import pandas as pd
 import streamlit as st
 
-st.set_page_config(
-    page_title="Customer Lifetime Value Analysis",
-    page_icon="📊",
-    layout="wide",
-)
+st.set_page_config(page_title="Customer Lifetime Value Analysis", page_icon="📊", layout="wide")
 
-# Simple styling to keep the app clean and easy to use.
 st.markdown(
     """
     <style>
     .stApp {background: linear-gradient(135deg, #f8f5ff, #eef2ff, #ecfeff);}
     [data-testid="stSidebar"] {background: linear-gradient(180deg, #1e1b4b, #312e81, #164e63);}
     [data-testid="stSidebar"] * {color: white !important;}
-    .hero {
-        padding: 2rem;
-        border-radius: 24px;
-        background: linear-gradient(120deg, #1e1b4b, #4c1d95, #0891b2);
-        color: white;
-        margin-bottom: 1.2rem;
-    }
+    .hero {padding: 2rem; border-radius: 24px; background: linear-gradient(120deg, #1e1b4b, #4c1d95, #0891b2); color: white; margin-bottom: 1.2rem;}
     .hero h1 {font-size: 2.6rem; margin: .3rem 0;}
     .hero p {color: #dbeafe; font-size: 1.05rem;}
-    .card {
-        padding: 1.2rem;
-        border-radius: 18px;
-        background: rgba(255,255,255,.92);
-        border: 1px solid #c4b5fd;
-        box-shadow: 0 8px 22px rgba(49,46,129,.08);
-    }
+    .card {padding: 1.2rem; border-radius: 18px; background: rgba(255,255,255,.92); border: 1px solid #c4b5fd; box-shadow: 0 8px 22px rgba(49,46,129,.08);}
     .footer {text-align: center; color: #64748b; padding: 1.5rem 0;}
     </style>
     """,
@@ -62,46 +45,22 @@ if list(features) != EXPECTED_FEATURES:
     st.stop()
 
 SEGMENT_INFO = {
-    "Champions": {
-        "icon": "🏆",
-        "description": "Customers with strong recent and repeat purchasing behaviour.",
-        "action": "Focus on retention, appreciation and relevant offers.",
-    },
-    "Loyal Customers": {
-        "icon": "❤️",
-        "description": "Customers who show consistent purchasing activity.",
-        "action": "Build loyalty and introduce useful cross-sell opportunities.",
-    },
-    "Potential Loyalists": {
-        "icon": "🌱",
-        "description": "Customers showing promising behaviour but with room to grow.",
-        "action": "Encourage another purchase and strengthen engagement.",
-    },
-    "At Risk": {
-        "icon": "⚠️",
-        "description": "Customers whose recent activity suggests reduced engagement.",
-        "action": "Consider a simple re-engagement or retention campaign.",
-    },
-    "Lost Customers": {
-        "icon": "🔄",
-        "description": "Customers with a strong inactivity signal in their historical data.",
-        "action": "Consider whether a cost-effective win-back approach makes sense.",
-    },
+    "Champions": {"icon": "🏆", "description": "Customers with strong recent and repeat purchasing behaviour.", "action": "Focus on retention, appreciation and relevant offers."},
+    "Loyal Customers": {"icon": "❤️", "description": "Customers who show consistent purchasing activity.", "action": "Build loyalty and introduce useful cross-sell opportunities."},
+    "Potential Loyalists": {"icon": "🌱", "description": "Customers showing promising behaviour but with room to grow.", "action": "Encourage another purchase and strengthen engagement."},
+    "At Risk": {"icon": "⚠️", "description": "Customers whose recent activity suggests reduced engagement.", "action": "Consider a simple re-engagement or retention campaign."},
+    "Lost Customers": {"icon": "🔄", "description": "Customers with a strong inactivity signal in their historical data.", "action": "Consider whether a cost-effective win-back approach makes sense."},
 }
 
 
 def predict_segment(recency, frequency, monetary):
     """Predict a customer segment from the three RFM values."""
-    customer = pd.DataFrame(
-        [[recency, frequency, monetary]],
-        columns=EXPECTED_FEATURES,
-    )
+    customer = pd.DataFrame([[recency, frequency, monetary]], columns=EXPECTED_FEATURES)
     prediction = model.predict(customer)
     segment = encoder.inverse_transform(prediction)[0]
     return segment, customer
 
 
-# Sidebar navigation
 st.sidebar.title("📊 CLV Analysis")
 st.sidebar.caption("Understand customer behaviour using RFM analysis.")
 page = st.sidebar.radio(
@@ -109,7 +68,9 @@ page = st.sidebar.radio(
     ["Customer Analysis", "What-if Simulator", "Model Insights", "Segment Guide", "About Project"],
 )
 st.sidebar.divider()
-st.sidebar.caption("Random Forest • RFM • 5 customer segments")
+st.sidebar.caption("Random Forest")
+st.sidebar.caption("RFM")
+st.sidebar.caption("5 Customer Segments")
 st.sidebar.caption("Developed by MD JAHID")
 
 
@@ -142,17 +103,9 @@ if page == "Customer Analysis":
 
     if st.button("Analyze Customer", type="primary", use_container_width=True):
         segment, customer = predict_segment(recency, frequency, monetary)
-        info = SEGMENT_INFO.get(
-            segment,
-            {
-                "icon": "🔎",
-                "description": "The model assigned this historical customer segment.",
-                "action": "Review the customer's RFM values before taking action.",
-            },
-        )
+        info = SEGMENT_INFO.get(segment, {"icon": "🔎", "description": "The model assigned this historical customer segment.", "action": "Review the customer's RFM values before taking action."})
 
         left, right = st.columns([1, 1])
-
         with left:
             st.markdown(
                 f"""
@@ -175,15 +128,11 @@ if page == "Customer Analysis":
             if hasattr(model, "predict_proba"):
                 probabilities = model.predict_proba(customer)[0]
                 classes = encoder.inverse_transform(model.classes_)
-                probability_data = pd.DataFrame(
-                    {"Segment": classes, "Probability": probabilities}
-                ).set_index("Segment")
+                probability_data = pd.DataFrame({"Segment": classes, "Probability": probabilities}).set_index("Segment")
                 st.subheader("Model confidence")
                 st.bar_chart(probability_data)
 
-    st.caption(
-        "Note: this application classifies historical RFM behaviour. It does not directly forecast a future monetary CLV amount."
-    )
+    st.caption("This application classifies historical RFM behaviour. It does not directly forecast a future monetary CLV amount.")
 
 
 elif page == "What-if Simulator":
@@ -254,24 +203,14 @@ elif page == "Model Insights":
     c.metric("Output", "Customer segment")
 
     st.subheader("Prediction flow")
-    st.code(
-        "Recency + Frequency + Monetary\n"
-        "          ↓\n"
-        "   Random Forest\n"
-        "          ↓\n"
-        "     Segment label"
-    )
+    st.code("Recency + Frequency + Monetary\n          ↓\n   Random Forest\n          ↓\n     Segment label")
 
     if hasattr(model, "feature_importances_"):
-        importance = pd.DataFrame(
-            {"Feature": features, "Importance": model.feature_importances_}
-        ).set_index("Feature")
+        importance = pd.DataFrame({"Feature": features, "Importance": model.feature_importances_}).set_index("Feature")
         st.subheader("Feature importance")
         st.bar_chart(importance)
 
-    st.info(
-        "The segment label is created from RFM-based business rules. Because the model learns from related RFM inputs, very high classification scores should be interpreted carefully."
-    )
+    st.info("The segment label is created from RFM-based business rules. Because the model learns from related RFM inputs, very high classification scores should be interpreted carefully.")
 
 
 elif page == "Segment Guide":
@@ -316,28 +255,19 @@ else:
     )
 
     st.markdown("### Project overview")
-    st.write(
-        "Customer Lifetime Value Analysis uses historical retail transactions to create customer-level RFM measures: Recency, Frequency and Monetary value. These measures are then used to classify customers into meaningful segments."
-    )
+    st.write("Customer Lifetime Value Analysis uses historical retail transactions to create customer-level RFM measures: Recency, Frequency and Monetary value. These measures are then used to classify customers into meaningful segments.")
 
     st.markdown("### Technology used")
     st.write("Python • Pandas • Scikit-learn • Joblib • Streamlit • Matplotlib")
 
     st.markdown("### Project scope")
-    st.write(
-        "The application focuses on customer-value segmentation from historical behaviour. It does not directly predict a future monetary CLV amount."
-    )
+    st.write("The application focuses on customer-value segmentation from historical behaviour. It does not directly predict a future monetary CLV amount.")
 
     st.markdown("### Future improvements")
-    st.write(
-        "Possible extensions include numerical CLV forecasting, churn prediction, richer behavioural features, model comparison and time-based validation."
-    )
+    st.write("Possible extensions include numerical CLV forecasting, churn prediction, richer behavioural features, model comparison and time-based validation.")
 
     st.markdown("### Developer")
     st.write("MD JAHID")
 
 
-st.markdown(
-    '<div class="footer">Customer Lifetime Value Analysis • RFM Customer Segmentation • MD JAHID</div>',
-    unsafe_allow_html=True,
-)
+st.markdown('<div class="footer">Customer Lifetime Value Analysis • RFM Customer Segmentation • MD JAHID</div>', unsafe_allow_html=True)
