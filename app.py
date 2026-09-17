@@ -68,10 +68,14 @@ page = st.sidebar.radio(
     ["Customer Analysis", "What-if Simulator", "Model Insights", "Segment Guide", "About Project"],
 )
 st.sidebar.divider()
+
 st.sidebar.caption("Random Forest")
 st.sidebar.caption("RFM")
 st.sidebar.caption("5 Customer Segments")
-st.sidebar.caption("Developed by MD JAHID")
+
+st.sidebar.divider()
+st.sidebar.caption("Developed by")
+st.sidebar.markdown("**MD JAHID**")
 
 
 if page == "Customer Analysis":
