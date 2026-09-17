@@ -7,18 +7,18 @@ st.set_page_config(page_title="Customer Lifetime Value Analysis | MD JAHID", pag
 
 st.markdown("""
 <style>
-.stApp {background:linear-gradient(135deg,#fff7ed 0%,#f5f3ff 45%,#ecfeff 100%);}
-[data-testid="stSidebar"] {background:linear-gradient(180deg,#17112b 0%,#4c1d95 48%,#115e59 100%);}
-[data-testid="stSidebar"] * {color:white !important;}
-.hero {padding:2.5rem;border-radius:30px;background:linear-gradient(120deg,#1e1638 0%,#7c3aed 48%,#0f766e 100%);color:white;margin-bottom:1.3rem;box-shadow:0 18px 45px rgba(76,29,149,.22);border:1px solid rgba(255,255,255,.18);}
+.stApp {background:linear-gradient(135deg,#fff7ed 0%,#fef3c7 45%,#f0fdfa 100%);}
+[data-testid="stSidebar"] {background:linear-gradient(180deg,#172554 0%,#164e63 52%,#134e4a 100%);}
+[data-testid="stSidebar"] * {color:#f8fafc !important;}
+.hero {padding:2.6rem;border-radius:30px;background:linear-gradient(120deg,#172554 0%,#7c2d12 48%,#0f766e 100%);color:white;margin-bottom:1.3rem;box-shadow:0 18px 45px rgba(23,37,84,.22);border:1px solid rgba(255,255,255,.18);}
 .hero h1 {font-size:3rem;margin:.35rem 0;letter-spacing:-1px;}
-.hero p {color:#e0f2fe;font-size:1.08rem;}
-.badge {display:inline-block;padding:.4rem .9rem;border-radius:999px;background:linear-gradient(90deg,#fef3c7,#d9f99d,#a5f3fc);color:#4c1d95;font-weight:800;}
-.card {padding:1.2rem;border-radius:22px;background:rgba(255,255,255,.94);border:1px solid #ddd6fe;box-shadow:0 10px 28px rgba(76,29,149,.09);}
-.dna {padding:1.5rem;border-radius:25px;background:linear-gradient(135deg,#f5f3ff,#ecfdf5);border:1px solid #c4b5fd;text-align:center;box-shadow:0 8px 24px rgba(124,58,237,.10);}
+.hero p {color:#fef3c7;font-size:1.08rem;}
+.badge {display:inline-block;padding:.42rem .95rem;border-radius:999px;background:linear-gradient(90deg,#fbbf24,#5eead4);color:#172554;font-weight:900;}
+.card {padding:1.2rem;border-radius:22px;background:rgba(255,255,255,.9);border:1px solid #fed7aa;box-shadow:0 10px 28px rgba(120,53,15,.09);}
+.dna {padding:1.5rem;border-radius:25px;background:linear-gradient(135deg,#fff7ed,#f0fdfa);border:1px solid #99f6e4;text-align:center;box-shadow:0 8px 24px rgba(15,118,110,.10);}
 .dna-icon {font-size:4rem;}
-.result {padding:1.6rem;border-radius:24px;background:linear-gradient(135deg,#fff7ed,#ecfeff);border:1px solid #5eead4;text-align:center;box-shadow:0 8px 24px rgba(13,148,136,.10);}
-.result-value {font-size:2rem;font-weight:900;color:#6d28d9;}
+.result {padding:1.6rem;border-radius:24px;background:linear-gradient(135deg,#fffbeb,#ecfdf5);border:1px solid #fcd34d;text-align:center;box-shadow:0 8px 24px rgba(180,83,9,.10);}
+.result-value {font-size:2rem;font-weight:900;color:#9a3412;}
 .footer {text-align:center;color:#64748b;padding:2rem 0;}
 </style>
 """, unsafe_allow_html=True)
