@@ -19,6 +19,7 @@ st.markdown(
     .brand-title {font-size:1.25rem; font-weight:700;}
     .brand-subtitle {font-size:.72rem; opacity:.75; margin-top:2px;}
     .nav-title {font-size:.68rem; letter-spacing:1px; opacity:.7; margin:10px 0 7px 2px;}
+    .nav-box {padding:8px; border-radius:16px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.13);}
     .side-card {padding:14px; border-radius:16px; background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.12);}
     .side-card-title {font-size:.68rem; letter-spacing:1px; opacity:.7; margin-bottom:10px;}
     .side-item {display:flex; align-items:center; gap:10px; padding:9px 6px; margin:4px 0; border-radius:10px; transition:background .2s ease, transform .2s ease;}
@@ -26,11 +27,17 @@ st.markdown(
     .side-icon {width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.10);}
     .side-item b {display:block; font-size:.82rem;}
     .side-item small {display:block; font-size:.65rem; opacity:.65; margin-top:2px;}
-    .developer-card {padding:14px; border-radius:16px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); text-align:center;}
-    .dev-label {font-size:.62rem; letter-spacing:1.2px; opacity:.65;}
-    .dev-name {font-size:1.05rem; font-weight:700; margin-top:4px;}
-    .dev-role {font-size:.68rem; opacity:.65; margin-top:2px;}
+    .developer-card {padding:16px 12px; border-radius:18px; background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.16); box-shadow:0 8px 20px rgba(0,0,0,.12); text-align:center; margin-top:4px;}
+    .dev-avatar {width:38px; height:38px; margin:0 auto 8px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.12); font-size:18px;}
+    .dev-label {font-size:.62rem; letter-spacing:1.4px; opacity:.65; margin-bottom:7px;}
+    .dev-name {font-size:1.12rem; font-weight:800; margin:0;}
+    .dev-role {font-size:.70rem; opacity:.70; margin-top:5px;}
     .footer {text-align:center; color:#64748b; padding:1.5rem 0;}
+    /* Make the sidebar radio navigation look like a clean selectable list of boxes. */
+    [data-testid="stSidebar"] [data-testid="stRadio"] > div {gap:6px;}
+    [data-testid="stSidebar"] [data-testid="stRadio"] label {padding:9px 10px; border-radius:11px; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.045); margin:0; transition:all .2s ease;}
+    [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.20); transform:translateX(2px);}
+    [data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) {background:rgba(255,255,255,.17); border-color:rgba(255,255,255,.30); box-shadow:0 4px 12px rgba(0,0,0,.10);}
     </style>
     """,
     unsafe_allow_html=True,
@@ -90,7 +97,7 @@ st.sidebar.caption("Understand customer behaviour using RFM analysis.")
 
 st.sidebar.markdown('<div class="nav-title">EXPLORE</div>', unsafe_allow_html=True)
 
-# Box-style navigation using radio buttons styled as a compact menu.
+# Selectable list with each page shown as a separate box.
 page = st.sidebar.radio(
     "Navigation",
     [
@@ -135,6 +142,7 @@ st.sidebar.divider()
 st.sidebar.markdown(
     """
     <div class="developer-card">
+        <div class="dev-avatar">👨‍💻</div>
         <div class="dev-label">PROJECT DEVELOPER</div>
         <div class="dev-name">MD JAHID</div>
         <div class="dev-role">Data Science Project</div>
