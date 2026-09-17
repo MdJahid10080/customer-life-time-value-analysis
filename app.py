@@ -3,23 +3,23 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-st.set_page_config(page_title="Customer DNA Lab | MD JAHID", page_icon="🧬", layout="wide")
+st.set_page_config(page_title="Customer Lifetime Value Analysis | MD JAHID", page_icon="📊", layout="wide")
 
 st.markdown("""
 <style>
-.stApp {background:linear-gradient(135deg,#f8fafc,#eef2ff,#ecfeff);}
-[data-testid="stSidebar"] {background:linear-gradient(180deg,#0f172a,#312e81);}
+.stApp {background:linear-gradient(135deg,#fff7ed,#fefce8,#f0fdf4);}
+[data-testid="stSidebar"] {background:linear-gradient(180deg,#7c2d12,#b45309,#166534);}
 [data-testid="stSidebar"] * {color:white !important;}
-.hero {padding:2.4rem;border-radius:28px;background:linear-gradient(135deg,#0f172a,#312e81,#0f766e);color:white;margin-bottom:1.2rem;box-shadow:0 15px 40px rgba(15,23,42,.18);}
+.hero {padding:2.4rem;border-radius:28px;background:linear-gradient(135deg,#7c2d12,#c2410c,#15803d);color:white;margin-bottom:1.2rem;box-shadow:0 15px 40px rgba(124,45,18,.20);}
 .hero h1 {font-size:3rem;margin:.3rem 0;}
-.hero p {color:#dbeafe;font-size:1.05rem;}
-.badge {display:inline-block;padding:.35rem .8rem;border-radius:999px;background:#ccfbf1;color:#115e59;font-weight:800;}
-.card {padding:1.2rem;border-radius:20px;background:white;border:1px solid #e2e8f0;box-shadow:0 8px 24px rgba(15,23,42,.07);}
-.dna {padding:1.4rem;border-radius:24px;background:linear-gradient(135deg,#eef2ff,#ecfeff);border:1px solid #a5f3fc;text-align:center;}
+.hero p {color:#ffedd5;font-size:1.05rem;}
+.badge {display:inline-block;padding:.35rem .8rem;border-radius:999px;background:#fef3c7;color:#92400e;font-weight:800;}
+.card {padding:1.2rem;border-radius:20px;background:white;border:1px solid #fed7aa;box-shadow:0 8px 24px rgba(124,45,18,.07);}
+.dna {padding:1.4rem;border-radius:24px;background:linear-gradient(135deg,#fff7ed,#f0fdf4);border:1px solid #fdba74;text-align:center;}
 .dna-icon {font-size:4rem;}
-.result {padding:1.5rem;border-radius:22px;background:linear-gradient(135deg,#f0fdfa,#eef2ff);border:1px solid #99f6e4;text-align:center;}
-.result-value {font-size:2rem;font-weight:900;color:#0f766e;}
-.footer {text-align:center;color:#64748b;padding:2rem 0;}
+.result {padding:1.5rem;border-radius:22px;background:linear-gradient(135deg,#fefce8,#f0fdf4);border:1px solid #86efac;text-align:center;}
+.result-value {font-size:2rem;font-weight:900;color:#15803d;}
+.footer {text-align:center;color:#78716c;padding:2rem 0;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -68,10 +68,10 @@ def dna_chart(r, f, m):
     ax.set_ylim(0, 1)
     return fig
 
-st.sidebar.markdown("# 🧬 DNA LAB")
-st.sidebar.caption("Customer behaviour intelligence")
-page = st.sidebar.radio("LAB MODULES", [
-    "🧬 DNA Lab", "🧪 Mutation Simulator", "🌌 Customer Universe",
+st.sidebar.markdown("# 📊 CLV ANALYSIS")
+st.sidebar.caption("Customer value intelligence")
+page = st.sidebar.radio("PROJECT MODULES", [
+    "📊 CLV Analysis", "🧪 Scenario Simulator", "🌌 Customer Universe",
     "⏳ Time Machine", "🧠 Model X-Ray", "🎯 Action Center", "📚 Project Info"
 ])
 st.sidebar.divider()
@@ -79,30 +79,30 @@ st.sidebar.success("🟢 Analytics Engine Online")
 st.sidebar.caption("Random Forest • RFM • 5 Segments")
 st.sidebar.markdown("**Developer:** MD JAHID")
 
-if page == "🧬 DNA Lab":
+if page == "📊 CLV Analysis":
     st.markdown("""
     <div class="hero">
-      <span class="badge">CUSTOMER INTELLIGENCE LAB</span>
-      <h1>🧬 Customer DNA Lab</h1>
-      <p>Decode a customer's historical behaviour using Recency, Frequency and Monetary signals.</p>
+      <span class="badge">CUSTOMER VALUE INTELLIGENCE</span>
+      <h1>📊 Customer Lifetime Value Analysis</h1>
+      <p>Analyze customer historical value using Recency, Frequency and Monetary signals.</p>
     </div>
     """, unsafe_allow_html=True)
-    presets = {"Custom DNA": (30, 10, 1000.0), "Power Buyer": (7, 35, 4500.0), "Premium Buyer": (12, 22, 8500.0), "Occasional Buyer": (120, 5, 600.0), "Inactive Buyer": (365, 2, 250.0)}
-    preset = st.selectbox("🧩 Choose a demonstration DNA", list(presets))
+    presets = {"Custom Profile": (30, 10, 1000.0), "Power Buyer": (7, 35, 4500.0), "Premium Buyer": (12, 22, 8500.0), "Occasional Buyer": (120, 5, 600.0), "Inactive Buyer": (365, 2, 250.0)}
+    preset = st.selectbox("🧩 Choose a demonstration customer profile", list(presets))
     r0, f0, m0 = presets[preset]
     a, b, c = st.columns(3)
     r = a.number_input("Recency — days", 0, 5000, r0)
     f = b.number_input("Frequency — orders", 0, 10000, f0)
     m = c.number_input("Monetary — ₹", 0.0, 10000000.0, m0, 100.0)
-    if st.button("🧬 Decode Customer DNA", type="primary", use_container_width=True):
+    if st.button("📊 Analyze Customer Value", type="primary", use_container_width=True):
         segment, x = predict(r, f, m)
         icon, meaning, action = INFO.get(segment, ("🔎", "Model-derived segment.", "Review the RFM profile."))
         left, right = st.columns([1, 1])
         with left:
-            st.markdown(f'<div class="dna"><div class="dna-icon">🧬</div><h2>{icon} {segment}</h2><p>R = {r} days &nbsp; | &nbsp; F = {f} orders &nbsp; | &nbsp; M = ₹{m:,.0f}</p></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="dna"><div class="dna-icon">📊</div><h2>{icon} {segment}</h2><p>R = {r} days &nbsp; | &nbsp; F = {f} orders &nbsp; | &nbsp; M = ₹{m:,.0f}</p></div>', unsafe_allow_html=True)
             st.pyplot(dna_chart(r, f, m), use_container_width=True)
         with right:
-            st.markdown(f'<div class="result"><small>DNA CLASSIFICATION</small><div class="result-value">{icon} {segment}</div><p>{meaning}</p></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="result"><small>CUSTOMER SEGMENT</small><div class="result-value">{icon} {segment}</div><p>{meaning}</p></div>', unsafe_allow_html=True)
             st.info(f"**Business focus:** {action}")
             if hasattr(model, "predict_proba"):
                 probs = model.predict_proba(x)[0]
@@ -111,10 +111,10 @@ if page == "🧬 DNA Lab":
                 st.markdown("### 📡 Model probability signal")
                 st.bar_chart(chart)
 
-elif page == "🧪 Mutation Simulator":
+elif page == "🧪 Scenario Simulator":
     st.markdown("""
-    <div class="hero"><span class="badge">WHAT-IF ENGINE</span>
-    <h1>🧪 Customer Mutation Simulator</h1>
+    <div class="hero"><span class="badge">WHAT-IF ANALYSIS</span>
+    <h1>🧪 Customer Scenario Simulator</h1>
     <p>Change customer behaviour signals and compare the model classification before and after.</p></div>
     """, unsafe_allow_html=True)
     st.warning("This is a scenario simulation, not a forecast of actual future behaviour or future monetary CLV.")
@@ -143,7 +143,7 @@ elif page == "🌌 Customer Universe":
     st.markdown("""
     <div class="hero"><span class="badge">BEHAVIOUR MAP</span>
     <h1>🌌 Customer Universe</h1>
-    <p>Explore a synthetic population of customer DNA profiles.</p></div>
+    <p>Explore a synthetic population of customer value profiles.</p></div>
     """, unsafe_allow_html=True)
     st.caption("These profiles are generated for demonstration and are not the original transaction dataset.")
     n = st.slider("Demo customers", 25, 200, 75, 25)
@@ -205,11 +205,11 @@ elif page == "🎯 Action Center":
 else:
     st.markdown("""
     <div class="hero"><span class="badge">ACADEMIC PROJECT</span>
-    <h1>📚 Project Info</h1>
-    <p>Customer Lifetime Value Analysis — RFM-based customer segmentation and classification.</p></div>
+    <h1>📚 Customer Lifetime Value Analysis</h1>
+    <p>RFM-based customer segmentation and classification using historical retail behaviour.</p></div>
     """, unsafe_allow_html=True)
     st.markdown("### Technology")
-    st.write("Python • Pandas • NumPy • Scikit-learn • Joblib • Streamlit")
+    st.write("Python • Pandas • NumPy • Scikit-learn • Joblib • Streamlit • Matplotlib")
     st.write("Model: Random Forest Classifier")
     st.write("Developer: MD JAHID")
     st.write("University: Jagan Nath University, Bahadurgarh (NCR)")
@@ -218,4 +218,4 @@ else:
     st.markdown("### Future scope")
     st.write("Numerical CLV forecasting, churn prediction, richer behavioural features, model comparison, time-based validation and personalized recommendations.")
 
-st.markdown('<div class="footer">🧬 Customer DNA Lab • Customer Lifetime Value Analysis • MD JAHID</div>', unsafe_allow_html=True)
+st.markdown('<div class="footer">📊 Customer Lifetime Value Analysis • RFM Customer Segmentation • MD JAHID</div>', unsafe_allow_html=True)
