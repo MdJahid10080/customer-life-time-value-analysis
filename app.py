@@ -7,19 +7,19 @@ st.set_page_config(page_title="Customer Lifetime Value Analysis | MD JAHID", pag
 
 st.markdown("""
 <style>
-.stApp {background:linear-gradient(135deg,#fff7ed,#fefce8,#f0fdf4);}
-[data-testid="stSidebar"] {background:linear-gradient(180deg,#7c2d12,#b45309,#166534);}
+.stApp {background:linear-gradient(135deg,#f8fafc 0%,#eef2ff 48%,#ecfeff 100%);}
+[data-testid="stSidebar"] {background:linear-gradient(180deg,#0f172a 0%,#312e81 55%,#0f766e 100%);}
 [data-testid="stSidebar"] * {color:white !important;}
-.hero {padding:2.4rem;border-radius:28px;background:linear-gradient(135deg,#7c2d12,#c2410c,#15803d);color:white;margin-bottom:1.2rem;box-shadow:0 15px 40px rgba(124,45,18,.20);}
-.hero h1 {font-size:3rem;margin:.3rem 0;}
-.hero p {color:#ffedd5;font-size:1.05rem;}
-.badge {display:inline-block;padding:.35rem .8rem;border-radius:999px;background:#fef3c7;color:#92400e;font-weight:800;}
-.card {padding:1.2rem;border-radius:20px;background:white;border:1px solid #fed7aa;box-shadow:0 8px 24px rgba(124,45,18,.07);}
-.dna {padding:1.4rem;border-radius:24px;background:linear-gradient(135deg,#fff7ed,#f0fdf4);border:1px solid #fdba74;text-align:center;}
+.hero {padding:2.5rem;border-radius:30px;background:linear-gradient(120deg,#111827 0%,#4338ca 48%,#0891b2 100%);color:white;margin-bottom:1.3rem;box-shadow:0 18px 45px rgba(30,41,59,.20);border:1px solid rgba(255,255,255,.15);}
+.hero h1 {font-size:3rem;margin:.35rem 0;letter-spacing:-1px;}
+.hero p {color:#e0f2fe;font-size:1.08rem;}
+.badge {display:inline-block;padding:.4rem .9rem;border-radius:999px;background:linear-gradient(90deg,#fef3c7,#cffafe);color:#3730a3;font-weight:800;}
+.card {padding:1.2rem;border-radius:22px;background:rgba(255,255,255,.94);border:1px solid #cbd5e1;box-shadow:0 10px 28px rgba(15,23,42,.08);}
+.dna {padding:1.5rem;border-radius:25px;background:linear-gradient(135deg,#eef2ff,#ecfeff);border:1px solid #a5b4fc;text-align:center;box-shadow:0 8px 24px rgba(79,70,229,.08);}
 .dna-icon {font-size:4rem;}
-.result {padding:1.5rem;border-radius:22px;background:linear-gradient(135deg,#fefce8,#f0fdf4);border:1px solid #86efac;text-align:center;}
-.result-value {font-size:2rem;font-weight:900;color:#15803d;}
-.footer {text-align:center;color:#78716c;padding:2rem 0;}
+.result {padding:1.6rem;border-radius:24px;background:linear-gradient(135deg,#f5f3ff,#ecfeff);border:1px solid #67e8f9;text-align:center;box-shadow:0 8px 24px rgba(8,145,178,.08);}
+.result-value {font-size:2rem;font-weight:900;color:#4338ca;}
+.footer {text-align:center;color:#64748b;padding:2rem 0;}
 </style>
 """, unsafe_allow_html=True)
 
