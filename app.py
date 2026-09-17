@@ -1,221 +1,343 @@
 import joblib
-import numpy as np
 import pandas as pd
 import streamlit as st
 
-st.set_page_config(page_title="Customer Lifetime Value Analysis | MD JAHID", page_icon="📊", layout="wide")
+st.set_page_config(
+    page_title="Customer Lifetime Value Analysis",
+    page_icon="📊",
+    layout="wide",
+)
 
-st.markdown("""
-<style>
-.stApp {background:linear-gradient(135deg,#f8f5ff 0%,#eef2ff 48%,#ecfeff 100%);}
-[data-testid="stSidebar"] {background:linear-gradient(180deg,#1e1b4b 0%,#312e81 52%,#164e63 100%);}
-[data-testid="stSidebar"] * {color:#f8fafc !important;}
-.hero {padding:2.6rem;border-radius:30px;background:linear-gradient(120deg,#1e1b4b 0%,#4c1d95 50%,#0891b2 100%);color:white;margin-bottom:1.3rem;box-shadow:0 18px 45px rgba(49,46,129,.22);border:1px solid rgba(255,255,255,.16);}
-.hero h1 {font-size:3rem;margin:.35rem 0;letter-spacing:-1px;}
-.hero p {color:#dbeafe;font-size:1.08rem;}
-.badge {display:inline-block;padding:.42rem .95rem;border-radius:999px;background:linear-gradient(90deg,#a78bfa,#67e8f9);color:#172554;font-weight:900;}
-.card {padding:1.2rem;border-radius:22px;background:rgba(255,255,255,.92);border:1px solid #c4b5fd;box-shadow:0 10px 28px rgba(49,46,129,.09);}
-.dna {padding:1.5rem;border-radius:25px;background:linear-gradient(135deg,#f5f3ff,#ecfeff);border:1px solid #a5f3fc;text-align:center;box-shadow:0 8px 24px rgba(8,145,178,.10);}
-.dna-icon {font-size:4rem;}
-.result {padding:1.6rem;border-radius:24px;background:linear-gradient(135deg,#f5f3ff,#eff6ff);border:1px solid #a78bfa;text-align:center;box-shadow:0 8px 24px rgba(109,40,217,.10);}
-.result-value {font-size:2rem;font-weight:900;color:#4c1d95;}
-.footer {text-align:center;color:#64748b;padding:2rem 0;}
-</style>
-""", unsafe_allow_html=True)
+# Simple styling to keep the app clean and easy to use.
+st.markdown(
+    """
+    <style>
+    .stApp {background: linear-gradient(135deg, #f8f5ff, #eef2ff, #ecfeff);}
+    [data-testid="stSidebar"] {background: linear-gradient(180deg, #1e1b4b, #312e81, #164e63);}
+    [data-testid="stSidebar"] * {color: white !important;}
+    .hero {
+        padding: 2rem;
+        border-radius: 24px;
+        background: linear-gradient(120deg, #1e1b4b, #4c1d95, #0891b2);
+        color: white;
+        margin-bottom: 1.2rem;
+    }
+    .hero h1 {font-size: 2.6rem; margin: .3rem 0;}
+    .hero p {color: #dbeafe; font-size: 1.05rem;}
+    .card {
+        padding: 1.2rem;
+        border-radius: 18px;
+        background: rgba(255,255,255,.92);
+        border: 1px solid #c4b5fd;
+        box-shadow: 0 8px 22px rgba(49,46,129,.08);
+    }
+    .footer {text-align: center; color: #64748b; padding: 1.5rem 0;}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 @st.cache_resource
-def load_assets():
-    return joblib.load("rf_model.pkl"), joblib.load("label_encoder.pkl"), joblib.load("feature_columns.pkl")
+def load_model():
+    """Load the trained model and supporting files once."""
+    model = joblib.load("rf_model.pkl")
+    encoder = joblib.load("label_encoder.pkl")
+    features = joblib.load("feature_columns.pkl")
+    return model, encoder, features
+
 
 try:
-    model, encoder, features = load_assets()
-except Exception as exc:
-    st.error("Model files could not be loaded.")
-    st.code(str(exc))
+    model, encoder, features = load_model()
+except Exception:
+    st.error(
+        "The model files could not be loaded. Please make sure rf_model.pkl, "
+        "label_encoder.pkl and feature_columns.pkl are present in the project."
+    )
     st.stop()
 
-expected = ["Recency", "Frequency", "Monetary"]
-if list(features) != expected:
-    st.warning(f"Loaded feature order: {list(features)}")
+EXPECTED_FEATURES = ["Recency", "Frequency", "Monetary"]
+if list(features) != EXPECTED_FEATURES:
+    st.error(f"The model expects these inputs: {list(features)}")
+    st.stop()
 
-INFO = {
-    "Champions": ("🏆", "Highly engaged historical behaviour.", "Reward, retain and personalize engagement."),
-    "Loyal Customers": ("❤️", "Repeated purchasing behaviour.", "Strengthen loyalty and explore cross-sell opportunities."),
-    "Potential Loyalists": ("🌱", "Promising but developing behaviour.", "Nurture engagement and encourage repeat purchases."),
-    "At Risk": ("⚠️", "Reduced recent activity signal.", "Consider re-engagement and retention experiments."),
-    "Lost Customers": ("🔄", "Substantial inactivity signal.", "Evaluate cost-effective win-back opportunities."),
+SEGMENT_INFO = {
+    "Champions": {
+        "icon": "🏆",
+        "description": "Customers with strong recent and repeat purchasing behaviour.",
+        "action": "Focus on retention, appreciation and relevant offers.",
+    },
+    "Loyal Customers": {
+        "icon": "❤️",
+        "description": "Customers who show consistent purchasing activity.",
+        "action": "Build loyalty and introduce useful cross-sell opportunities.",
+    },
+    "Potential Loyalists": {
+        "icon": "🌱",
+        "description": "Customers showing promising behaviour but with room to grow.",
+        "action": "Encourage another purchase and strengthen engagement.",
+    },
+    "At Risk": {
+        "icon": "⚠️",
+        "description": "Customers whose recent activity suggests reduced engagement.",
+        "action": "Consider a simple re-engagement or retention campaign.",
+    },
+    "Lost Customers": {
+        "icon": "🔄",
+        "description": "Customers with a strong inactivity signal in their historical data.",
+        "action": "Consider whether a cost-effective win-back approach makes sense.",
+    },
 }
 
-def predict(r, f, m):
-    x = pd.DataFrame([[r, f, m]], columns=features)
-    encoded = model.predict(x)
-    return encoder.inverse_transform(encoded)[0], x
 
-def dna_scores(r, f, m):
-    return max(0, 100 - min(r, 500) / 5), min(100, f / 50 * 100), min(100, m / 10000 * 100)
+def predict_segment(recency, frequency, monetary):
+    """Predict a customer segment from the three RFM values."""
+    customer = pd.DataFrame(
+        [[recency, frequency, monetary]],
+        columns=EXPECTED_FEATURES,
+    )
+    prediction = model.predict(customer)
+    segment = encoder.inverse_transform(prediction)[0]
+    return segment, customer
 
-def dna_chart(r, f, m):
-    rs, fs, ms = dna_scores(r, f, m)
-    angles = np.linspace(0, 2 * np.pi, 4)[:-1]
-    values = np.array([rs, fs, ms]) / 100
-    import matplotlib.pyplot as plt
-    fig = plt.figure(figsize=(5, 4))
-    ax = fig.add_subplot(111, polar=True)
-    ax.plot(np.r_[angles, angles[0]], np.r_[values, values[0]], marker="o")
-    ax.fill(np.r_[angles, angles[0]], np.r_[values, values[0]], alpha=.15)
-    ax.set_xticks(angles)
-    ax.set_xticklabels(["Recency", "Frequency", "Monetary"])
-    ax.set_ylim(0, 1)
-    return fig
 
-st.sidebar.markdown("# 📊 CLV ANALYSIS")
-st.sidebar.caption("Customer value intelligence")
-page = st.sidebar.radio("PROJECT MODULES", [
-    "📊 CLV Analysis", "🧪 Scenario Simulator", "🌌 Customer Universe",
-    "⏳ Time Machine", "🧠 Model X-Ray", "🎯 Action Center", "📚 Project Info"
-])
+# Sidebar navigation
+st.sidebar.title("📊 CLV Analysis")
+st.sidebar.caption("Understand customer behaviour using RFM analysis.")
+page = st.sidebar.radio(
+    "Go to",
+    ["Customer Analysis", "What-if Simulator", "Model Insights", "Segment Guide", "About Project"],
+)
 st.sidebar.divider()
-st.sidebar.success("🟢 Analytics Engine Online")
-st.sidebar.caption("Random Forest • RFM • 5 Segments")
-st.sidebar.markdown("**Developer:** MD JAHID")
+st.sidebar.caption("Random Forest • RFM • 5 customer segments")
+st.sidebar.caption("Developed by MD JAHID")
 
-if page == "📊 CLV Analysis":
-    st.markdown("""
-    <div class="hero">
-      <span class="badge">CUSTOMER VALUE INTELLIGENCE</span>
-      <h1>📊 Customer Lifetime Value Analysis</h1>
-      <p>Analyze customer historical value using Recency, Frequency and Monetary signals.</p>
-    </div>
-    """, unsafe_allow_html=True)
-    presets = {"Custom Profile": (30, 10, 1000.0), "Power Buyer": (7, 35, 4500.0), "Premium Buyer": (12, 22, 8500.0), "Occasional Buyer": (120, 5, 600.0), "Inactive Buyer": (365, 2, 250.0)}
-    preset = st.selectbox("🧩 Choose a demonstration customer profile", list(presets))
-    r0, f0, m0 = presets[preset]
-    a, b, c = st.columns(3)
-    r = a.number_input("Recency — days", 0, 5000, r0)
-    f = b.number_input("Frequency — orders", 0, 10000, f0)
-    m = c.number_input("Monetary — ₹", 0.0, 10000000.0, m0, 100.0)
-    if st.button("📊 Analyze Customer Value", type="primary", use_container_width=True):
-        segment, x = predict(r, f, m)
-        icon, meaning, action = INFO.get(segment, ("🔎", "Model-derived segment.", "Review the RFM profile."))
+
+if page == "Customer Analysis":
+    st.markdown(
+        """
+        <div class="hero">
+            <h1>📊 Customer Lifetime Value Analysis</h1>
+            <p>Enter a customer's RFM details and see how the trained model classifies their historical value profile.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    presets = {
+        "Try your own values": (30, 10, 1000.0),
+        "Frequent recent buyer": (7, 35, 4500.0),
+        "High-spending buyer": (12, 22, 8500.0),
+        "Occasional buyer": (120, 5, 600.0),
+        "Inactive buyer": (365, 2, 250.0),
+    }
+
+    profile = st.selectbox("Choose a sample profile", list(presets))
+    default_recency, default_frequency, default_monetary = presets[profile]
+
+    col1, col2, col3 = st.columns(3)
+    recency = col1.number_input("Recency (days)", 0, 5000, default_recency)
+    frequency = col2.number_input("Frequency (orders)", 0, 10000, default_frequency)
+    monetary = col3.number_input("Monetary value (₹)", 0.0, 10000000.0, default_monetary, 100.0)
+
+    if st.button("Analyze Customer", type="primary", use_container_width=True):
+        segment, customer = predict_segment(recency, frequency, monetary)
+        info = SEGMENT_INFO.get(
+            segment,
+            {
+                "icon": "🔎",
+                "description": "The model assigned this historical customer segment.",
+                "action": "Review the customer's RFM values before taking action.",
+            },
+        )
+
         left, right = st.columns([1, 1])
+
         with left:
-            st.markdown(f'<div class="dna"><div class="dna-icon">📊</div><h2>{icon} {segment}</h2><p>R = {r} days &nbsp; | &nbsp; F = {f} orders &nbsp; | &nbsp; M = ₹{m:,.0f}</p></div>', unsafe_allow_html=True)
-            st.pyplot(dna_chart(r, f, m), use_container_width=True)
+            st.markdown(
+                f"""
+                <div class="card">
+                    <h2>{info['icon']} {segment}</h2>
+                    <p>{info['description']}</p>
+                    <p><b>Recency:</b> {recency} days</p>
+                    <p><b>Frequency:</b> {frequency} orders</p>
+                    <p><b>Monetary:</b> ₹{monetary:,.0f}</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
         with right:
-            st.markdown(f'<div class="result"><small>CUSTOMER SEGMENT</small><div class="result-value">{icon} {segment}</div><p>{meaning}</p></div>', unsafe_allow_html=True)
-            st.info(f"**Business focus:** {action}")
+            st.subheader("What this means")
+            st.info(info["description"])
+            st.success(f"Possible business focus: {info['action']}")
+
             if hasattr(model, "predict_proba"):
-                probs = model.predict_proba(x)[0]
+                probabilities = model.predict_proba(customer)[0]
                 classes = encoder.inverse_transform(model.classes_)
-                chart = pd.DataFrame({"Segment": classes, "Probability": probs}).set_index("Segment")
-                st.markdown("### 📡 Model probability signal")
-                st.bar_chart(chart)
+                probability_data = pd.DataFrame(
+                    {"Segment": classes, "Probability": probabilities}
+                ).set_index("Segment")
+                st.subheader("Model confidence")
+                st.bar_chart(probability_data)
 
-elif page == "🧪 Scenario Simulator":
-    st.markdown("""
-    <div class="hero"><span class="badge">WHAT-IF ANALYSIS</span>
-    <h1>🧪 Customer Scenario Simulator</h1>
-    <p>Change customer behaviour signals and compare the model classification before and after.</p></div>
-    """, unsafe_allow_html=True)
-    st.warning("This is a scenario simulation, not a forecast of actual future behaviour or future monetary CLV.")
-    a, b, c = st.columns(3)
-    with a:
-        r0 = st.number_input("Current Recency", 0, 5000, 30)
-        r1 = st.number_input("Scenario Recency", 0, 5000, 120)
-    with b:
-        f0 = st.number_input("Current Frequency", 0, 10000, 10)
-        f1 = st.number_input("Scenario Frequency", 0, 10000, 20)
-    with c:
-        m0 = st.number_input("Current Monetary ₹", 0.0, 10000000.0, 1000.0)
-        m1 = st.number_input("Scenario Monetary ₹", 0.0, 10000000.0, 2500.0)
-    before, _ = predict(r0, f0, m0)
-    after, _ = predict(r1, f1, m1)
-    x, y = st.columns(2)
-    x.metric("BEFORE", before)
-    y.metric("AFTER SCENARIO", after)
-    st.markdown(f"**RFM change:** R {r0} → {r1}, F {f0} → {f1}, M ₹{m0:,.0f} → ₹{m1:,.0f}")
-    if before != after:
-        st.success(f"The simulated RFM change moved the classifier from **{before}** to **{after}**.")
+    st.caption(
+        "Note: this application classifies historical RFM behaviour. It does not directly forecast a future monetary CLV amount."
+    )
+
+
+elif page == "What-if Simulator":
+    st.markdown(
+        """
+        <div class="hero">
+            <h1>🧪 What-if Simulator</h1>
+            <p>Change the RFM values and see how the model responds to the new customer profile.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.warning("This is a hypothetical scenario, not a forecast of future behaviour or future CLV.")
+
+    current = st.columns(3)
+    scenario = st.columns(3)
+
+    with current[0]:
+        current_r = st.number_input("Current recency", 0, 5000, 30)
+    with current[1]:
+        current_f = st.number_input("Current frequency", 0, 10000, 10)
+    with current[2]:
+        current_m = st.number_input("Current monetary (₹)", 0.0, 10000000.0, 1000.0, 100.0)
+
+    st.markdown("### Change the profile")
+
+    with scenario[0]:
+        new_r = st.number_input("New recency", 0, 5000, 120)
+    with scenario[1]:
+        new_f = st.number_input("New frequency", 0, 10000, 20)
+    with scenario[2]:
+        new_m = st.number_input("New monetary (₹)", 0.0, 10000000.0, 2500.0, 100.0)
+
+    before, _ = predict_segment(current_r, current_f, current_m)
+    after, _ = predict_segment(new_r, new_f, new_m)
+
+    result1, result2 = st.columns(2)
+    result1.metric("Current segment", before)
+    result2.metric("Scenario segment", after)
+
+    st.write(
+        f"**RFM change:** Recency {current_r} → {new_r} days | "
+        f"Frequency {current_f} → {new_f} orders | "
+        f"Monetary ₹{current_m:,.0f} → ₹{new_m:,.0f}"
+    )
+
+    if before == after:
+        st.info(f"The model keeps the customer in the **{after}** segment for this scenario.")
     else:
-        st.info(f"The classifier remained **{after}** in this scenario.")
+        st.success(f"With these changed RFM values, the model classifies the profile as **{after}** instead of **{before}**.")
 
-elif page == "🌌 Customer Universe":
-    st.markdown("""
-    <div class="hero"><span class="badge">BEHAVIOUR MAP</span>
-    <h1>🌌 Customer Universe</h1>
-    <p>Explore a synthetic population of customer value profiles.</p></div>
-    """, unsafe_allow_html=True)
-    st.caption("These profiles are generated for demonstration and are not the original transaction dataset.")
-    n = st.slider("Demo customers", 25, 200, 75, 25)
-    rng = np.random.default_rng(42)
-    df = pd.DataFrame({"Customer": [f"C-{i:03d}" for i in range(1, n + 1)], "Recency": rng.integers(1, 400, n), "Frequency": rng.integers(1, 45, n), "Monetary": rng.uniform(100, 9000, n).round(0)})
-    df["Segment"] = [predict(a, b, c)[0] for a, b, c in zip(df.Recency, df.Frequency, df.Monetary)]
-    st.scatter_chart(df, x="Recency", y="Monetary", color="Segment", size="Frequency")
-    selected = st.selectbox("🔭 Inspect a customer", df.Customer)
-    st.dataframe(df[df.Customer == selected], use_container_width=True, hide_index=True)
 
-elif page == "⏳ Time Machine":
-    st.markdown("""
-    <div class="hero"><span class="badge">PAST → PRESENT → SCENARIO</span>
-    <h1>⏳ Customer Time Machine</h1>
-    <p>Compare three RFM states and observe the classifier's response.</p></div>
-    """, unsafe_allow_html=True)
-    st.warning("Scenario is hypothetical; it is not a prediction of actual future CLV.")
-    defaults = [(180, 4, 500), (45, 12, 1800), (15, 25, 5000)]
-    labels = ["🕰️ Past", "📍 Present", "🔮 Scenario"]
-    cols = st.columns(3)
-    for i, col in enumerate(cols):
-        with col:
-            st.markdown(f"### {labels[i]}")
-            r = st.number_input("Recency", 0, 5000, defaults[i][0], key=f"r{i}")
-            f = st.number_input("Frequency", 0, 10000, defaults[i][1], key=f"f{i}")
-            m = st.number_input("Monetary ₹", 0.0, 10000000.0, float(defaults[i][2]), 100.0, key=f"m{i}")
-            s, _ = predict(r, f, m)
-            st.metric("Segment", s)
+elif page == "Model Insights":
+    st.markdown(
+        """
+        <div class="hero">
+            <h1>🧠 Model Insights</h1>
+            <p>A simple view of what goes into the model and how the prediction is produced.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-elif page == "🧠 Model X-Ray":
-    st.markdown("""
-    <div class="hero"><span class="badge">MODEL TRANSPARENCY</span>
-    <h1>🧠 Model X-Ray</h1>
-    <p>Understand exactly what the trained model receives and produces.</p></div>
-    """, unsafe_allow_html=True)
     a, b, c = st.columns(3)
     a.metric("Algorithm", "Random Forest")
-    b.metric("Inputs", "3 RFM")
-    c.metric("Output", "Segment")
-    st.markdown("### 🔬 Prediction pipeline")
-    st.code("Recency + Frequency + Monetary\n          ↓\n   Random Forest Classifier\n          ↓\n     Segment label")
-    if hasattr(model, "feature_importances_"):
-        imp = pd.DataFrame({"Feature": features, "Importance": model.feature_importances_}).set_index("Feature")
-        st.bar_chart(imp)
-    st.info("The segment target is derived from RFM-based business rules. Therefore, very high classification performance should be interpreted carefully.")
+    b.metric("Inputs", "3 RFM features")
+    c.metric("Output", "Customer segment")
 
-elif page == "🎯 Action Center":
-    st.markdown("""
-    <div class="hero"><span class="badge">SEGMENT PLAYBOOK</span>
-    <h1>🎯 Action Center</h1>
-    <p>Translate analytical segments into possible business responses.</p></div>
-    """, unsafe_allow_html=True)
-    segment = st.selectbox("Select segment", list(INFO))
-    icon, meaning, action = INFO[segment]
-    st.markdown(f"## {icon} {segment}")
-    st.markdown(f'<div class="card"><h3>Behaviour</h3><p>{meaning}</p><h3>Possible business focus</h3><p>{action}</p></div>', unsafe_allow_html=True)
-    st.caption("These are analytical suggestions based on historical RFM segmentation, not guaranteed outcomes.")
+    st.subheader("Prediction flow")
+    st.code(
+        "Recency + Frequency + Monetary\n"
+        "          ↓\n"
+        "   Random Forest\n"
+        "          ↓\n"
+        "     Segment label"
+    )
+
+    if hasattr(model, "feature_importances_"):
+        importance = pd.DataFrame(
+            {"Feature": features, "Importance": model.feature_importances_}
+        ).set_index("Feature")
+        st.subheader("Feature importance")
+        st.bar_chart(importance)
+
+    st.info(
+        "The segment label is created from RFM-based business rules. Because the model learns from related RFM inputs, very high classification scores should be interpreted carefully."
+    )
+
+
+elif page == "Segment Guide":
+    st.markdown(
+        """
+        <div class="hero">
+            <h1>🎯 Segment Guide</h1>
+            <p>Use this page to understand the meaning of each customer segment.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    segment = st.selectbox("Select a segment", list(SEGMENT_INFO))
+    info = SEGMENT_INFO[segment]
+
+    st.markdown(
+        f"""
+        <div class="card">
+            <h2>{info['icon']} {segment}</h2>
+            <h4>Customer behaviour</h4>
+            <p>{info['description']}</p>
+            <h4>Possible business focus</h4>
+            <p>{info['action']}</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.caption("These suggestions are based on historical RFM segmentation and should be used as analytical guidance.")
+
 
 else:
-    st.markdown("""
-    <div class="hero"><span class="badge">ACADEMIC PROJECT</span>
-    <h1>📚 Customer Lifetime Value Analysis</h1>
-    <p>RFM-based customer segmentation and classification using historical retail behaviour.</p></div>
-    """, unsafe_allow_html=True)
-    st.markdown("### Technology")
-    st.write("Python • Pandas • NumPy • Scikit-learn • Joblib • Streamlit • Matplotlib")
-    st.write("Model: Random Forest Classifier")
-    st.write("Developer: MD JAHID")
-    st.write("University: Jagan Nath University, Bahadurgarh (NCR)")
-    st.markdown("### Scope")
-    st.info("This application performs customer-value segmentation from historical RFM behaviour. It does not directly forecast a future monetary CLV amount.")
-    st.markdown("### Future scope")
-    st.write("Numerical CLV forecasting, churn prediction, richer behavioural features, model comparison, time-based validation and personalized recommendations.")
+    st.markdown(
+        """
+        <div class="hero">
+            <h1>📚 About the Project</h1>
+            <p>A practical data-science project for understanding customer purchasing behaviour.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-st.markdown('<div class="footer">📊 Customer Lifetime Value Analysis • RFM Customer Segmentation • MD JAHID</div>', unsafe_allow_html=True)
+    st.markdown("### Project overview")
+    st.write(
+        "Customer Lifetime Value Analysis uses historical retail transactions to create customer-level RFM measures: Recency, Frequency and Monetary value. These measures are then used to classify customers into meaningful segments."
+    )
+
+    st.markdown("### Technology used")
+    st.write("Python • Pandas • Scikit-learn • Joblib • Streamlit • Matplotlib")
+
+    st.markdown("### Project scope")
+    st.write(
+        "The application focuses on customer-value segmentation from historical behaviour. It does not directly predict a future monetary CLV amount."
+    )
+
+    st.markdown("### Future improvements")
+    st.write(
+        "Possible extensions include numerical CLV forecasting, churn prediction, richer behavioural features, model comparison and time-based validation."
+    )
+
+    st.markdown("### Developer")
+    st.write("MD JAHID")
+
+
+st.markdown(
+    '<div class="footer">Customer Lifetime Value Analysis • RFM Customer Segmentation • MD JAHID</div>',
+    unsafe_allow_html=True,
+)
