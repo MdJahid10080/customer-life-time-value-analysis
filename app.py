@@ -14,10 +14,11 @@ st.markdown(
     .hero h1 {font-size: 2.6rem; margin: .3rem 0;}
     .hero p {color: #dbeafe; font-size: 1.05rem;}
     .card {padding: 1.2rem; border-radius: 18px; background: rgba(255,255,255,.92); border: 1px solid #c4b5fd; box-shadow: 0 8px 22px rgba(49,46,129,.08);}
-    .sidebar-brand {display:flex; align-items:center; gap:12px; padding:8px 4px 14px;}
+    .sidebar-brand {display:flex; align-items:center; gap:12px; padding:8px 4px 14px 4px;}
     .brand-icon {width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.14); font-size:21px;}
     .brand-title {font-size:1.25rem; font-weight:700;}
     .brand-subtitle {font-size:.72rem; opacity:.75; margin-top:2px;}
+    .nav-title {font-size:.68rem; letter-spacing:1px; opacity:.7; margin:10px 0 7px 2px;}
     .side-card {padding:14px; border-radius:16px; background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.12);}
     .side-card-title {font-size:.68rem; letter-spacing:1px; opacity:.7; margin-bottom:10px;}
     .side-item {display:flex; align-items:center; gap:10px; padding:9px 6px; margin:4px 0; border-radius:10px; transition:background .2s ease, transform .2s ease;}
@@ -72,7 +73,7 @@ def predict_segment(recency, frequency, monetary):
     segment = encoder.inverse_transform(prediction)[0]
     return segment, customer
 
-# Interactive sidebar
+# Sidebar
 st.sidebar.markdown(
     """
     <div class="sidebar-brand">
@@ -87,12 +88,26 @@ st.sidebar.markdown(
 )
 st.sidebar.caption("Understand customer behaviour using RFM analysis.")
 
+st.sidebar.markdown('<div class="nav-title">EXPLORE</div>', unsafe_allow_html=True)
+
+# Box-style navigation using radio buttons styled as a compact menu.
 page = st.sidebar.radio(
-    "Explore",
-    ["Customer Analysis", "What-if Simulator", "Model Insights", "Segment Guide", "About Project"],
+    "Navigation",
+    [
+        "🔎  Customer Analysis",
+        "🧪  What-if Simulator",
+        "🧠  Model Insights",
+        "🎯  Segment Guide",
+        "📚  About Project",
+    ],
+    label_visibility="collapsed",
 )
+
+page = page.split("  ", 1)[1]
+
 st.sidebar.divider()
 
+# Model card
 st.sidebar.markdown(
     """
     <div class="side-card">
@@ -116,6 +131,7 @@ st.sidebar.markdown(
 
 st.sidebar.divider()
 
+# Developer card
 st.sidebar.markdown(
     """
     <div class="developer-card">
@@ -198,100 +214,49 @@ elif page == "What-if Simulator":
         unsafe_allow_html=True,
     )
     st.warning("This is a hypothetical scenario, not a forecast of future behaviour or future CLV.")
-
     current = st.columns(3)
     scenario = st.columns(3)
-
     with current[0]: current_r = st.number_input("Current recency", 0, 5000, 30)
     with current[1]: current_f = st.number_input("Current frequency", 0, 10000, 10)
     with current[2]: current_m = st.number_input("Current monetary (₹)", 0.0, 10000000.0, 1000.0, 100.0)
-
     st.markdown("### Change the profile")
-
     with scenario[0]: new_r = st.number_input("New recency", 0, 5000, 120)
     with scenario[1]: new_f = st.number_input("New frequency", 0, 10000, 20)
     with scenario[2]: new_m = st.number_input("New monetary (₹)", 0.0, 10000000.0, 2500.0, 100.0)
-
     before, _ = predict_segment(current_r, current_f, current_m)
     after, _ = predict_segment(new_r, new_f, new_m)
-
     result1, result2 = st.columns(2)
     result1.metric("Current segment", before)
     result2.metric("Scenario segment", after)
-
-    st.write(
-        f"**RFM change:** Recency {current_r} → {new_r} days | "
-        f"Frequency {current_f} → {new_f} orders | "
-        f"Monetary ₹{current_m:,.0f} → ₹{new_m:,.0f}"
-    )
-
+    st.write(f"**RFM change:** Recency {current_r} → {new_r} days | Frequency {current_f} → {new_f} orders | Monetary ₹{current_m:,.0f} → ₹{new_m:,.0f}")
     if before == after:
         st.info(f"The model keeps the customer in the **{after}** segment for this scenario.")
     else:
         st.success(f"With these changed RFM values, the model classifies the profile as **{after}** instead of **{before}**.")
 
 elif page == "Model Insights":
-    st.markdown(
-        """
-        <div class="hero">
-            <h1>🧠 Model Insights</h1>
-            <p>A simple view of what goes into the model and how the prediction is produced.</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    st.markdown("""<div class="hero"><h1>🧠 Model Insights</h1><p>A simple view of what goes into the model and how the prediction is produced.</p></div>""", unsafe_allow_html=True)
     a, b, c = st.columns(3)
     a.metric("Algorithm", "Random Forest")
     b.metric("Inputs", "3 RFM features")
     c.metric("Output", "Customer segment")
-
     st.subheader("Prediction flow")
     st.code("Recency + Frequency + Monetary\n          ↓\n   Random Forest\n          ↓\n     Segment label")
-
     if hasattr(model, "feature_importances_"):
         importance = pd.DataFrame({"Feature": features, "Importance": model.feature_importances_}).set_index("Feature")
         st.subheader("Feature importance")
         st.bar_chart(importance)
-
     st.info("The segment label is created from RFM-based business rules. Because the model learns from related RFM inputs, very high classification scores should be interpreted carefully.")
 
 elif page == "Segment Guide":
-    st.markdown(
-        """
-        <div class="hero">
-            <h1>🎯 Segment Guide</h1>
-            <p>Use this page to understand the meaning of each customer segment.</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    st.markdown("""<div class="hero"><h1>🎯 Segment Guide</h1><p>Use this page to understand the meaning of each customer segment.</p></div>""", unsafe_allow_html=True)
     segment = st.selectbox("Select a segment", list(SEGMENT_INFO))
     info = SEGMENT_INFO[segment]
-
-    st.markdown(
-        f"""
-        <div class="card">
-            <h2>{info['icon']} {segment}</h2>
-            <h4>Customer behaviour</h4>
-            <p>{info['description']}</p>
-            <h4>Possible business focus</h4>
-            <p>{info['action']}</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    st.markdown(f"""<div class="card"><h2>{info['icon']} {segment}</h2><h4>Customer behaviour</h4><p>{info['description']}</p><h4>Possible business focus</h4><p>{info['action']}</p></div>""", unsafe_allow_html=True)
     st.caption("These suggestions are based on historical RFM segmentation and should be used as analytical guidance.")
 
 else:
-    st.markdown(
-        """
-        <div class="hero">
-            <h1>📚 About the Project</h1>
-            <p>A practical data-science project for understanding customer purchasing behaviour.</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    st.markdown("""<div class="hero"><h1>📚 About the Project</h1><p>A practical data-science project for understanding customer purchasing behaviour.</p></div>""", unsafe_allow_html=True)
     st.markdown("### Project overview")
     st.write("Customer Lifetime Value Analysis uses historical retail transactions to create customer-level RFM measures: Recency, Frequency and Monetary value. These measures are then used to classify customers into meaningful segments.")
     st.markdown("### Technology used")
