@@ -45,26 +45,13 @@ st.markdown(
     [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.20); transform:translateX(2px);}
     [data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) {background:rgba(255,255,255,.17); border-color:rgba(255,255,255,.30); box-shadow:0 4px 12px rgba(0,0,0,.10);}
     
-    /* Modern medium-tone input fields */
+
+
+    /* Input text color only — keep the original Streamlit boxes */
     [data-testid="stNumberInput"] input,
-    [data-testid="stTextInput"] input,
-    [data-testid="stSelectbox"] div[data-baseweb="select"] > div {
-        background-color: #dbe4ea !important;
-        color: #172033 !important;
-        border: 1px solid #94a3b8 !important;
-        border-radius: 12px !important;
-        font-weight: 650 !important;
-    }
-    [data-testid="stNumberInput"] input:focus,
-    [data-testid="stTextInput"] input:focus {
-        border-color: #0f766e !important;
-        box-shadow: 0 0 0 2px rgba(15,118,110,.16) !important;
-    }
-    [data-testid="stNumberInput"] label,
-    [data-testid="stTextInput"] label,
-    [data-testid="stSelectbox"] label {
-        color: #172033 !important;
-        font-weight: 750 !important;
+    [data-testid="stTextInput"] input {
+        color: #0f766e !important;
+        font-weight: 700 !important;
     }
 
 </style>
