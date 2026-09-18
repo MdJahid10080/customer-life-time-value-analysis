@@ -14,6 +14,10 @@ st.markdown(
     .hero h1 {font-size: 2.6rem; margin: .3rem 0;}
     .hero p {color: #dbeafe; font-size: 1.05rem;}
     .card {padding: 1.2rem; border-radius: 18px; background: rgba(255,255,255,.92); border: 1px solid #c4b5fd; box-shadow: 0 8px 22px rgba(49,46,129,.08);}
+    .result-card {padding: 1.35rem; border-radius: 20px; background: linear-gradient(135deg, #111827 0%, #172554 55%, #164e63 100%); color: #f8fafc; border: 1px solid #334155; box-shadow: 0 12px 28px rgba(15,23,42,.22);}
+    .result-card h2 {color: #ffffff; margin-top: 0;}
+    .result-card p {color: #cbd5e1;}
+    .result-card .value {color: #67e8f9; font-size: 1.05rem; font-weight: 700;}
     .sidebar-brand {display:flex; align-items:center; gap:12px; padding:8px 4px 14px 4px;}
     .brand-icon {width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.14); font-size:21px;}
     .brand-title {font-size:1.25rem; font-weight:700;}
@@ -186,7 +190,8 @@ if page == "Customer Analysis":
         with left:
             st.markdown(
                 f"""
-                <div class="card">
+                <div class="result-card">
+                    <div class="value">CUSTOMER RESULT</div>
                     <h2>{info['icon']} {segment}</h2>
                     <p>{info['description']}</p>
                     <p><b>Recency:</b> {recency} days</p>
