@@ -14,7 +14,9 @@ st.markdown(
     .hero h1 {font-size: 2.6rem; margin: .3rem 0;}
     .hero p {color: #dbeafe; font-size: 1.05rem;}
     .card {padding: 1.2rem; border-radius: 18px; background: rgba(255,255,255,.92); border: 1px solid #c4b5fd; box-shadow: 0 8px 22px rgba(49,46,129,.08);}
-    .result-card {padding: 1.35rem; border-radius: 20px; background: linear-gradient(135deg, #111827 0%, #172554 55%, #164e63 100%); color: #f8fafc; border: 1px solid #334155; box-shadow: 0 12px 28px rgba(15,23,42,.22);}
+    .result-card {padding: 1.5rem; border-radius: 22px; background: linear-gradient(135deg, #0b1120 0%, #111827 52%, #172554 100%); color: #f8fafc; border: 1px solid #475569; box-shadow: 0 16px 34px rgba(2,6,23,.28);}
+    .result-card .result-title {font-size: 2.25rem; font-weight: 950; letter-spacing: -.7px; color: #ffffff; margin: .25rem 0 .7rem;}
+    .result-card .result-badge {display:inline-block; padding:5px 10px; border-radius:999px; background:rgba(103,232,249,.12); border:1px solid rgba(103,232,249,.35); color:#67e8f9; font-size:.68rem; font-weight:800; letter-spacing:1.2px;}
     .result-card h2 {color: #ffffff; margin-top: 0;}
     .result-card p {color: #cbd5e1;}
     .result-card .value {color: #67e8f9; font-size: 1.05rem; font-weight: 700;}
@@ -191,8 +193,8 @@ if page == "Customer Analysis":
             st.markdown(
                 f"""
                 <div class="result-card">
-                    <div class="value">CUSTOMER RESULT</div>
-                    <h2>{info['icon']} {segment}</h2>
+                    <div class="result-badge">CUSTOMER RESULT</div>
+                    <div class="result-title">{info['icon']} {segment}</div>
                     <p>{info['description']}</p>
                     <p><b>Recency:</b> {recency} days</p>
                     <p><b>Frequency:</b> {frequency} orders</p>
