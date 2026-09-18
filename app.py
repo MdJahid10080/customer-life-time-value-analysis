@@ -54,6 +54,13 @@ st.markdown(
         font-weight: 700 !important;
     }
 
+
+    /* RFM input fill color only */
+    [data-testid="stNumberInput"] input {
+        background-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+
 </style>
     """,
     unsafe_allow_html=True,
