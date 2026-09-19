@@ -119,6 +119,26 @@ st.markdown(
         font-weight: 800 !important;
     }
 
+
+/* Sidebar page navigation */
+[data-testid="stSidebar"] [data-testid="stRadio"] label {
+    background: #d8c7b5 !important;
+    border: 1px solid #c4ae98 !important;
+    color: #000000 !important;
+    border-radius: 12px !important;
+}
+[data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
+    background: #cbb39d !important;
+    border-color: #b79b80 !important;
+}
+[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) {
+    background: #b79b80 !important;
+    border-color: #9f8063 !important;
+}
+[data-testid="stSidebar"] [data-testid="stRadio"] label * {
+    color: #000000 !important;
+}
+
 </style>
     """,
     unsafe_allow_html=True,
