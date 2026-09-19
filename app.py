@@ -71,22 +71,7 @@ st.markdown(
     [data-testid="stSidebar"] {
         background: linear-gradient(180deg, #4f8f89 0%, #3f7f79 100%) !important;
     }
-    /* Sidebar page list: separate medium slate-blue accent */
-    [data-testid="stSidebar"] [data-testid="stRadio"] label {
-        background: #6b7fa3 !important;
-        border: 1px solid #8293b2 !important;
-        color: #ffffff !important;
-    }
-    [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
-        background: #7d8fb1 !important;
-    }
-    [data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) {
-        background: #526887 !important;
-        border-color: #aebbd0 !important;
-    }
-    [data-testid="stSidebar"] [data-testid="stRadio"] label * {
-        color: #ffffff !important;
-    }
+    /* Restore original sidebar page-list styling */
     [data-testid="stSidebar"] * {
         color: #000000 !important;
     }
