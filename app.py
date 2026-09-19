@@ -121,6 +121,14 @@ st.markdown(
 
 
 /* Sidebar page navigation restored */
+
+/* Sidebar page names only */
+[data-testid="stSidebar"] [data-testid="stRadio"] label,
+[data-testid="stSidebar"] [data-testid="stRadio"] label p,
+[data-testid="stSidebar"] [data-testid="stRadio"] label span {
+    color: #f6d7a7 !important;
+}
+
 </style>
     """,
     unsafe_allow_html=True,
