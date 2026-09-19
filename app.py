@@ -102,14 +102,11 @@ st.markdown(
     }
     [data-testid="stNumberInput"] input,
     [data-testid="stTextInput"] input,
-    textarea {
-        background: #ffffff !important;
+    textarea,
+    [data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+        background: #eef0f4 !important;
         color: #000000 !important;
         font-weight: 800 !important;
-    }
-    [data-testid="stSelectbox"] div[data-baseweb="select"] > div {
-        background: #ffffff !important;
-        color: #000000 !important;
     }
     [data-testid="stSelectbox"] * {
         color: #000000 !important;
