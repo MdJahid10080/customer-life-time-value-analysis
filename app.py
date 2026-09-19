@@ -7,7 +7,7 @@ st.set_page_config(page_title="Customer Lifetime Value Analysis", page_icon="ðŸ“
 st.markdown(
     """
     <style>
-    .stApp {background: linear-gradient(135deg, #f5f7fa, #f0fdfa, #eff6ff);}
+    .stApp {background: linear-gradient(135deg, #f5f3ff 0%, #e0f2fe 48%, #fce7f3 100%);}
     [data-testid="stSidebar"] {background: linear-gradient(180deg, #172033, #243b53, #115e59);}
     [data-testid="stSidebar"] * {color: white !important;}
     .hero {padding: 2rem; border-radius: 24px; background: linear-gradient(120deg, #172033, #0f766e, #0284c7); color: white; margin-bottom: 1.2rem;}
@@ -69,30 +69,30 @@ st.markdown(
         color: #000000 !important;
     }
     [data-testid="stSidebar"] {
-        background: #e9eef3 !important;
+        background: linear-gradient(180deg, #312e81 0%, #7c3aed 55%, #be185d 100%) !important;
     }
     [data-testid="stSidebar"] * {
         color: #000000 !important;
     }
     .hero {
-        background: #dfe7ee !important;
+        background: linear-gradient(120deg, #ddd6fe 0%, #bae6fd 50%, #fbcfe8 100%) !important;
         color: #000000 !important;
-        border: 1px solid #b8c4cf !important;
+        border: 1px solid #c4b5fd !important;
         box-shadow: 0 10px 24px rgba(15,23,42,.08) !important;
     }
     .hero h1, .hero p {
         color: #000000 !important;
     }
     .card {
-        background: #ffffff !important;
+        background: rgba(255,255,255,.94) !important;
         color: #000000 !important;
-        border: 1px solid #cbd5e1 !important;
+        border: 1px solid #c4b5fd !important;
         box-shadow: 0 8px 20px rgba(15,23,42,.07) !important;
     }
     .result-card {
-        background: #d7e0e8 !important;
+        background: linear-gradient(135deg, #ede9fe 0%, #dbeafe 52%, #fce7f3 100%) !important;
         color: #000000 !important;
-        border: 1px solid #aebdca !important;
+        border: 1px solid #a78bfa !important;
         box-shadow: 0 12px 26px rgba(15,23,42,.12) !important;
     }
     .result-card h2, .result-card h3, .result-card p,
@@ -104,7 +104,7 @@ st.markdown(
     [data-testid="stTextInput"] input,
     textarea,
     [data-testid="stSelectbox"] div[data-baseweb="select"] > div {
-        background: #eef0f4 !important;
+        background: #f1f5ff !important;
         color: #000000 !important;
         font-weight: 800 !important;
     }
@@ -112,9 +112,9 @@ st.markdown(
         color: #000000 !important;
     }
     .stButton > button {
-        background: #dce5ec !important;
+        background: linear-gradient(90deg, #ddd6fe, #bae6fd) !important;
         color: #000000 !important;
-        border: 1px solid #9aaaba !important;
+        border: 1px solid #a78bfa !important;
         font-weight: 800 !important;
     }
 
