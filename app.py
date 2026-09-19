@@ -7,19 +7,19 @@ st.set_page_config(page_title="Customer Lifetime Value Analysis", page_icon="ðŸ“
 st.markdown(
     """
     <style>
-    .stApp {background: linear-gradient(135deg, #ecfdf5 0%, #cffafe 50%, #fff1e6 100%);}
-    [data-testid="stSidebar"] {background: linear-gradient(180deg, #172033, #243b53, #115e59);}
+    .stApp {background: linear-gradient(135deg, #f2fbfa 0%, #e5f5f3 100%);}
+    [data-testid="stSidebar"] {background: linear-gradient(180deg, #172033, #243b53, #3f7f79);}
     [data-testid="stSidebar"] * {color: white !important;}
-    .hero {padding: 2rem; border-radius: 24px; background: linear-gradient(120deg, #172033, #0f766e, #0284c7); color: white; margin-bottom: 1.2rem;}
+    .hero {padding: 2rem; border-radius: 24px; background: linear-gradient(120deg, #172033, #4f8f89, #5f9993); color: white; margin-bottom: 1.2rem;}
     .hero h1 {font-size: 2.6rem; margin: .3rem 0;}
     .hero p {color: #d1fae5; font-size: 1.05rem;}
     .card {padding: 1.2rem; border-radius: 18px; background: rgba(255,255,255,.92); border: 1px solid #bae6fd; box-shadow: 0 8px 22px rgba(49,46,129,.08);}
     .result-card {padding: 1.5rem; border-radius: 22px; background: linear-gradient(135deg, #0b1120 0%, #111827 52%, #172554 100%); color: #3f2430; border: 1px solid #475569; box-shadow: 0 16px 34px rgba(2,6,23,.28);}
     .result-card .result-title {font-size: 2.25rem; font-weight: 950; letter-spacing: -.7px; color: #ffffff; margin: .25rem 0 .7rem;}
-    .result-card .result-badge {display:inline-block; padding:5px 10px; border-radius:999px; background:rgba(103,232,249,.12); border:1px solid rgba(103,232,249,.35); color:#5eead4; font-size:.68rem; font-weight:800; letter-spacing:1.2px;}
+    .result-card .result-badge {display:inline-block; padding:5px 10px; border-radius:999px; background:rgba(103,232,249,.12); border:1px solid rgba(103,232,249,.35); color:#72aaa4; font-size:.68rem; font-weight:800; letter-spacing:1.2px;}
     .result-card h2 {color: #ffffff; margin-top: 0;}
     .result-card p {color: #cbd5e1;}
-    .result-card .value {color: #5eead4; font-size: 1.05rem; font-weight: 700;}
+    .result-card .value {color: #72aaa4; font-size: 1.05rem; font-weight: 700;}
     .sidebar-brand {display:flex; align-items:center; gap:12px; padding:8px 4px 14px 4px;}
     .brand-icon {width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.14); font-size:21px;}
     .brand-title {font-size:1.25rem; font-weight:700;}
@@ -50,7 +50,7 @@ st.markdown(
     /* Input text color only â€” keep the original Streamlit boxes */
     [data-testid="stNumberInput"] input,
     [data-testid="stTextInput"] input {
-        color: #0f766e !important;
+        color: #4f8f89 !important;
         font-weight: 700 !important;
     }
 
@@ -69,15 +69,15 @@ st.markdown(
         color: #000000 !important;
     }
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #064e3b 0%, #0f766e 55%, #0e7490 100%) !important;
+        background: linear-gradient(180deg, #4f8f89 0%, #3f7f79 100%) !important;
     }
     [data-testid="stSidebar"] * {
         color: #000000 !important;
     }
     .hero {
-        background: linear-gradient(120deg, #a7f3d0 0%, #a5f3fc 50%, #fed7aa 100%) !important;
+        background: linear-gradient(120deg, #d9efec 0%, #c5e3df 100%) !important;
         color: #000000 !important;
-        border: 1px solid #5eead4 !important;
+        border: 1px solid #72aaa4 !important;
         box-shadow: 0 10px 24px rgba(15,23,42,.08) !important;
     }
     .hero h1, .hero p {
@@ -86,13 +86,13 @@ st.markdown(
     .card {
         background: rgba(255,255,255,.95) !important;
         color: #000000 !important;
-        border: 1px solid #5eead4 !important;
+        border: 1px solid #72aaa4 !important;
         box-shadow: 0 8px 20px rgba(15,23,42,.07) !important;
     }
     .result-card {
-        background: linear-gradient(135deg, #d1fae5 0%, #cffafe 52%, #ffedd5 100%) !important;
+        background: linear-gradient(135deg, #e0f1ef 0%, #cfe7e4 100%) !important;
         color: #000000 !important;
-        border: 1px solid #5eead4 !important;
+        border: 1px solid #72aaa4 !important;
         box-shadow: 0 12px 26px rgba(15,23,42,.12) !important;
     }
     .result-card h2, .result-card h3, .result-card p,
@@ -104,7 +104,7 @@ st.markdown(
     [data-testid="stTextInput"] input,
     textarea,
     [data-testid="stSelectbox"] div[data-baseweb="select"] > div {
-        background: #ecfeff !important;
+        background: #edf7f6 !important;
         color: #000000 !important;
         font-weight: 800 !important;
     }
@@ -112,9 +112,9 @@ st.markdown(
         color: #000000 !important;
     }
     .stButton > button {
-        background: linear-gradient(90deg, #a7f3d0, #a5f3fc) !important;
+        background: linear-gradient(90deg, #d9efec, #c5e3df) !important;
         color: #000000 !important;
-        border: 1px solid #5eead4 !important;
+        border: 1px solid #72aaa4 !important;
         font-weight: 800 !important;
     }
 
