@@ -61,6 +61,66 @@ st.markdown(
         color: #f8fafc !important;
     }
 
+
+    /* Global black-text modern neutral theme */
+    .stApp, .stApp p, .stApp label, .stApp span, .stApp div,
+    .stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6,
+    .stApp li, .stApp td, .stApp th, .stApp button {
+        color: #000000 !important;
+    }
+    [data-testid="stSidebar"] {
+        background: #e9eef3 !important;
+    }
+    [data-testid="stSidebar"] * {
+        color: #000000 !important;
+    }
+    .hero {
+        background: #dfe7ee !important;
+        color: #000000 !important;
+        border: 1px solid #b8c4cf !important;
+        box-shadow: 0 10px 24px rgba(15,23,42,.08) !important;
+    }
+    .hero h1, .hero p {
+        color: #000000 !important;
+    }
+    .card {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: 0 8px 20px rgba(15,23,42,.07) !important;
+    }
+    .result-card {
+        background: #d7e0e8 !important;
+        color: #000000 !important;
+        border: 1px solid #aebdca !important;
+        box-shadow: 0 12px 26px rgba(15,23,42,.12) !important;
+    }
+    .result-card h2, .result-card h3, .result-card p,
+    .result-card .value, .result-card .result-title,
+    .result-card .result-badge {
+        color: #000000 !important;
+    }
+    [data-testid="stNumberInput"] input,
+    [data-testid="stTextInput"] input,
+    textarea {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-weight: 800 !important;
+    }
+    [data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+    [data-testid="stSelectbox"] * {
+        color: #000000 !important;
+    }
+    .stButton > button {
+        background: #dce5ec !important;
+        color: #000000 !important;
+        border: 1px solid #9aaaba !important;
+        font-weight: 800 !important;
+    }
+
 </style>
     """,
     unsafe_allow_html=True,
