@@ -1,4 +1,5 @@
 import joblib
+import numpy as np
 import pandas as pd
 import streamlit as st
 
@@ -151,9 +152,9 @@ except Exception:
     )
     st.stop()
 
-EXPECTED_FEATURES = ["Recency", "Frequency", "Monetary"]
+EXPECTED_FEATURES = ["Log_Recency", "Log_Frequency", "Avg_Order_Value"]
 if list(features) != EXPECTED_FEATURES:
-    st.error(f"The model expects these inputs: {list(features)}")
+    st.error(f"The model expects these transformed inputs: {list(features)}")
     st.stop()
 
 SEGMENT_INFO = {
@@ -165,8 +166,15 @@ SEGMENT_INFO = {
 }
 
 def predict_segment(recency, frequency, monetary):
-    """Predict a customer segment from the three RFM values."""
-    customer = pd.DataFrame([[recency, frequency, monetary]], columns=EXPECTED_FEATURES)
+    """Predict a customer segment from raw RFM values using transformed model features."""
+    if frequency <= 0:
+        raise ValueError("Frequency must be greater than 0.")
+
+    customer = pd.DataFrame([[
+        np.log1p(recency),
+        np.log1p(frequency),
+        monetary / frequency
+    ]], columns=EXPECTED_FEATURES)
     prediction = model.predict(customer)
     segment = encoder.inverse_transform(prediction)[0]
     return segment, customer
