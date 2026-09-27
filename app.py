@@ -274,7 +274,7 @@ if page == "Customer Analysis":
 
     col1, col2, col3 = st.columns(3)
     recency = col1.number_input("Recency (days)", 0, 5000, default_recency)
-    frequency = col2.number_input("Frequency (orders)", 0, 10000, default_frequency)
+    frequency = col2.number_input("Frequency (orders)", 1, 10000, default_frequency)
     monetary = col3.number_input("Monetary value (₹)", 0.0, 10000000.0, default_monetary, 100.0)
 
     if st.button("Analyze Customer", type="primary", use_container_width=True):
@@ -325,11 +325,11 @@ elif page == "What-if Simulator":
     current = st.columns(3)
     scenario = st.columns(3)
     with current[0]: current_r = st.number_input("Current recency", 0, 5000, 30)
-    with current[1]: current_f = st.number_input("Current frequency", 0, 10000, 10)
+    with current[1]: current_f = st.number_input("Current frequency", 1, 10000, 10)
     with current[2]: current_m = st.number_input("Current monetary (₹)", 0.0, 10000000.0, 1000.0, 100.0)
     st.markdown("### Change the profile")
     with scenario[0]: new_r = st.number_input("New recency", 0, 5000, 120)
-    with scenario[1]: new_f = st.number_input("New frequency", 0, 10000, 20)
+    with scenario[1]: new_f = st.number_input("New frequency", 1, 10000, 20)
     with scenario[2]: new_m = st.number_input("New monetary (₹)", 0.0, 10000000.0, 2500.0, 100.0)
     before, _ = predict_segment(current_r, current_f, current_m)
     after, _ = predict_segment(new_r, new_f, new_m)
